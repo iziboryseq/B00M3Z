@@ -44,8 +44,16 @@ function createBot() {
     console.log("Spawned");
   });
 
-  bot.on("end", () => {
-    console.log("Disconnected. Reconnecting...");
+    bot.("error", (r) => {
+    console.log(r);
+  });
+
+    bot.on("kicked", (r) => {
+    console.log(r);
+  });
+
+  bot.on("end", (r) => {
+    console.log(r + " Reconnecting...");
     setTimeout(() => process.exit(1), 30_000);
   });
 }
