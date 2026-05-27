@@ -1,0 +1,55 @@
+name: B00N3Z
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 */4 * * *"
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install mineflayer
+
+      - name: Run B00N3Z
+        env:
+          HOST: ${{ secrets.HOST }}
+          PORT: ${{ secrets.PORT }}
+          USERNAME: ${{ secrets.USERNAME }}
+          VERSION: ${{ secrets.VERSION }}
+          CHAT: ${{ secrets.CHAT }}
+          VIEWDISTANCE: ${{ secrets.VIEWDISTANCE }}
+          COMMAND: ${{ secrets.COMMAND }}
+        run: |
+          while true
+          do
+            node index.js
+            echo "Disconnected or crashed. Restarting process in 30 seconds..."
+            sleep 30
+          done
+
+      - name: Keep Workflow Active
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          echo "Last run: $(date)" > keep_alive.txt
+          git add keep_alive.txt
+          git commit -m "Update" || exit 0
+          git push
