@@ -44,7 +44,7 @@ function createBot() {
     console.log("Spawned");
   });
 
-    bot.("error", (r) => {
+    bot.on("error", (r) => {
     console.log(r);
   });
 
