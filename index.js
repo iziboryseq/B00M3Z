@@ -104,7 +104,7 @@ function createBot() {
   bot.on("end", async (r) => {
     log.warn(r + " Reconnecting...");
     bot = null;
-    await sleep(30_000, 60_000);
+    await sleep(25_000, 35_000);
     createBot();
   });
 }
